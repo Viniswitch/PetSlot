@@ -1,3 +1,10 @@
+---
+about: Reportar um bug encontrado no sistema
+labels: bug
+name: Bug Report
+title: BUGXX -
+---
+
 # BUGXX - Título do Bug
 
 ## Descrição do Problema
@@ -31,9 +38,6 @@ Descreva o comportamento que realmente está acontecendo.
 
 Explique como o bug afeta o sistema ou os usuários.
 
-Exemplos: - Usuários conseguem selecionar o mesmo número da rifa -
-Inconsistência no sorteio - Falha na experiência do usuário
-
 ------------------------------------------------------------------------
 
 ## Critérios de Correção
@@ -57,14 +61,14 @@ Inconsistência no sorteio - Falha na experiência do usuário
 
 ## Relacionamentos
 
-Epic: E05 - Correção de Defeitos\
+Epic: E06 - Correção de Defeitos
 User Story relacionada: (ex: US04 - Escolher número da rifa)
 
 ------------------------------------------------------------------------
 
 ## Campos recomendados no Board
 
-Tipo: Bug\
-Priority: P0 / P1 / P2\
-Sprint: definir conforme planejamento\
+Tipo: Bug
+Priority: P0 / P1 / P2
+Sprint: definir conforme planejamento
 Story Points: normalmente vazio
