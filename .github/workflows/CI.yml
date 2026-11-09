@@ -1,0 +1,56 @@
+name: CI - Verificação da Documentação
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Verificar arquivos obrigatórios
+        run: |
+          faltando=0
+          for f in README.md DEFINITION_OF_DONE.md Anexo_Backlog_Completo_BDD.md \
+                   .github/ISSUE_TEMPLATE/user_story.md .github/ISSUE_TEMPLATE/bug_report.md; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Arquivo obrigatório ausente: $f"
+              faltando=1
+            fi
+          done
+          exit $faltando
+
+      - name: Verificar critérios BDD das histórias
+        run: |
+          python3 - <<'PY'
+          import re, sys
+          texto = open("Anexo_Backlog_Completo_BDD.md", encoding="utf-8").read()
+          historias = re.split(r"^### (US\d+)", texto, flags=re.M)[1:]
+          erros = 0
+          for codigo, corpo in zip(historias[0::2], historias[1::2]):
+              for palavra in ("Dado", "Quando", "Então"):
+                  if palavra not in corpo:
+                      print(f"::error::{codigo} sem a palavra '{palavra}' no critério BDD")
+                      erros += 1
+          print(f"{len(historias) // 2} histórias verificadas")
+          sys.exit(1 if erros else 0)
+          PY
+
+      - name: Verificar links internos dos documentos
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+          erros = 0
+          for arquivo in pathlib.Path(".").glob("*.md"):
+              for destino in re.findall(r"\]\((?!https?://|#|mailto:)([^)#\s]+)", arquivo.read_text(encoding="utf-8")):
+                  if not (arquivo.parent / destino).exists():
+                      print(f"::error file={arquivo}::Link quebrado: {destino}")
+                      erros += 1
+          sys.exit(1 if erros else 0)
+          PY
